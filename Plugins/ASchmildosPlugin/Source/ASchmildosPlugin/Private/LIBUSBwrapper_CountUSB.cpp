@@ -2,21 +2,31 @@
 
 
 #include "LIBUSBwrapper_CountUSB.h"
-#include "M:\UnrealEngineProjects\USB\Plugins\ASchmildosPlugin\ThirdParty\USBLIB\include\libusb.h"
 
-int32 ULIBUSBwrapper_CountUSB::CountConnectedUSBDevices()
+int32 ULIBUSBwrapper_CountUSB::SumConnectedDevices(ULIBUSBwrapper_init*& InContext)
 {
-    libusb_context* tmp_context = nullptr;
+    libusb_context* tmp_context = InContext->m_ContextObject;
     int32 deviceCount = 0;
 
     // Initialize libusb
-    int32 result = libusb_init(&tmp_context);
+    
+    //libusb_context* ctx = NULL;
+    /*
+    int result = libusb_init(&ctx);
+    if (result < 0) {
+        // handle error
+    }
+    else {
+        // context initialized successfully, use it to access USB devices
+    }
+
     if (result < 0)
     {
         // Error initializing libusb
         return 0;
     }
 
+    */
     // Get the number of connected USB devices
     libusb_device** deviceList;
     deviceCount = libusb_get_device_list(tmp_context, &deviceList);
@@ -30,17 +40,8 @@ int32 ULIBUSBwrapper_CountUSB::CountConnectedUSBDevices()
         // do something with the device
     }
 
-    
-
-
-
-
-
-
-
-    //deviceCount = libusb_get_device_list(tmp_context, nullptr);
     libusb_free_device_list(deviceList, 1);
     libusb_exit(tmp_context);
-//    deviceCount = 42;
+
     return deviceCount;
 }

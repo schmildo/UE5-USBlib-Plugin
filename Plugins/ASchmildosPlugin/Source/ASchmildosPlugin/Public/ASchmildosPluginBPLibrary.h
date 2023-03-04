@@ -4,6 +4,7 @@
 
 //#include "M:\UnrealEngineProjects\USB\Plugins\ASchmildosPlugin\ThirdParty\USBLIB\include\libusb.h"
 #include "LIBUSBwrapper_CountUSB.h"
+#include "LIBUSBwrapper_init.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ASchmildosPluginBPLibrary.generated.h"
 
@@ -30,12 +31,22 @@ UCLASS()
 class UASchmildosPluginBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
-public:
+	public:
 
 
-	  UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin")
-    //static int32 CountConnectedUSBDevices();
-	int32 CountConnectedUSBDevices();
-private:
+	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin", meta = (ReturnDisplayName = "Number of USB Devices"))
+		int32 CountConnectedUSBDevices(ULIBUSBwrapper_init*& InContext);
+	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin")
+	//	static bool InitializeLibUsbContext(ULIBUSBwrapper_init*& OutContext);
+		static ULIBUSBwrapper_init* InitializeLibUsbContext();
 
+	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin", meta = (ReturnDisplayName = "bContextExited"))
+		static void ExitLibUsbContext(ULIBUSBwrapper_init*& InContext);
+
+
+	//	UFUNCTION(BlueprintCallable, Category = "MyPlugin")
+	//static ULibUsbContext* InitializeLibUsbContext();
+
+	private:
+	
 };

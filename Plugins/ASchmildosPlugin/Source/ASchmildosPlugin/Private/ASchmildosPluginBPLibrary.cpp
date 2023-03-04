@@ -7,20 +7,63 @@ UASchmildosPluginBPLibrary::UASchmildosPluginBPLibrary(const FObjectInitializer&
 
 }
 
-int32 UASchmildosPluginBPLibrary::CountConnectedUSBDevices()
+int32 UASchmildosPluginBPLibrary::CountConnectedUSBDevices(ULIBUSBwrapper_init*& InContext)
 {
-	ULIBUSBwrapper_CountUSB usbContext;
-	int32 numDevices = usbContext.CountConnectedUSBDevices();
+	ULIBUSBwrapper_CountUSB billy;
+	int32 numDevices = billy.SumConnectedDevices(InContext);
+
+
+	//ReallyCountConnectedDevices
 	return numDevices;
 }
 
+/*
 
+bool UASchmildosPluginBPLibrary::InitializeLibUsbContext(ULIBUSBwrapper_init*& OutContext)
+{
 
+    OutContext = NewObject<ULIBUSBwrapper_init>();
 
+    bool bSuccess = OutContext->initialize();
+    if (!bSuccess)
+    {
+        OutContext = nullptr;
+    }
+	else
+	{
+		//m_God = OutContext;
+	}
 
+	return bSuccess;
+}
 
+*/
 
+ULIBUSBwrapper_init* UASchmildosPluginBPLibrary::InitializeLibUsbContext()
+{
+	libusb_context* tmp_context = nullptr;
 
+	int result = libusb_init(&tmp_context);
+
+	if (result != LIBUSB_SUCCESS)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to initialize libusb_context: %s"), ANSI_TO_TCHAR(libusb_error_name(result)));
+		return nullptr;
+	}
+
+	UE_LOG(LogTemp, Display, TEXT("libusb_context initialized"));
+
+	ULIBUSBwrapper_init* Context = NewObject<ULIBUSBwrapper_init>();
+	Context->m_ContextObject = tmp_context;
+
+	return Context;
+}
+
+void UASchmildosPluginBPLibrary::ExitLibUsbContext(ULIBUSBwrapper_init*& InContext)
+{
+	InContext->Exit();
+
+}
 
 /*
 
