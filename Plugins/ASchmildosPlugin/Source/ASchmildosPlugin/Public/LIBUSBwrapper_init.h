@@ -73,7 +73,8 @@ private:
 // Implementation of GetDeviceVID function
 int32 UMyLibusbDevice::GetDeviceVID() const {
     // Your code to get VID from the device
-    return 0;
+
+    return this->DeviceId;
 }
 
 
