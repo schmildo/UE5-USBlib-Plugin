@@ -8,11 +8,12 @@
 #include "LIBUSBwrapper_init.generated.h"
 
 
-// Declare the struct to hold device information
-USTRUCT(BlueprintType)
-struct FMyLibusbDevice {
+// Declare the class to hold device information
+UCLASS(BlueprintType)
+class UMyLibusbDevice : public UObject {
     GENERATED_BODY()
 
+public:
     UPROPERTY(BlueprintReadOnly)
     int32 DeviceId;
 
@@ -20,6 +21,9 @@ struct FMyLibusbDevice {
     FString DeviceName;
 
     // Other properties as needed
+
+    UFUNCTION(BlueprintCallable, Category = "MyPlugin|Libusb")
+    int32 GetDeviceVID() const;
 };
 
 
@@ -50,8 +54,12 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
          * Returns a list of connected Libusb devices.
          * @return A list of FMyLibusbDevice structs representing the connected devices.
          */
-        UFUNCTION(BlueprintCallable, Category = "MyPlugin|Libusb")
-        static TArray<FMyLibusbDevice> GetDeviceList();
+    /**
+     * Returns a list of connected Libusb devices.
+     * @return A list of FMyLibusbDevice structs representing the connected devices.
+     */
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
+    static TArray<UMyLibusbDevice*> GetDeviceList();
 		
 
 private:
@@ -62,7 +70,11 @@ private:
 
 
 
-
+// Implementation of GetDeviceVID function
+int32 UMyLibusbDevice::GetDeviceVID() const {
+    // Your code to get VID from the device
+    return 0;
+}
 
 
 /*
