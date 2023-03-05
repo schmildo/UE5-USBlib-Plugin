@@ -2,15 +2,30 @@
 
 #pragma once
 
+//#include "Misc/Variant.h"
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "M:\UnrealEngineProjects\USB\Plugins\ASchmildosPlugin\ThirdParty\USBLIB\include\libusb.h"
 #include "LIBUSBwrapper_init.generated.h"
 
 
+
+    USTRUCT(BlueprintType)
+    struct FDeviceVID
+    {
+        GENERATED_BODY()
+
+        UPROPERTY(BlueprintReadOnly)
+        int32 IntVID;
+
+        UPROPERTY(BlueprintReadOnly)
+        FString StringVID;
+    };
+
 // Declare the class to hold device information
 UCLASS(BlueprintType)
-class UMyLibusbDevice : public UObject {
+class UMyLibusbDevice : public UObject
+{
     GENERATED_BODY()
 
 public:
@@ -18,12 +33,20 @@ public:
     int32 DeviceId;
 
     UPROPERTY(BlueprintReadOnly)
+    int32 VendorId;
+
+    UPROPERTY(BlueprintReadOnly)
+    int32 ProductId;
+
+    UPROPERTY(BlueprintReadOnly)
     FString DeviceName;
 
     // Other properties as needed
 
-    UFUNCTION(BlueprintCallable, Category = "MyPlugin|Libusb")
-    int32 GetDeviceVID() const;
+
+
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
+    FDeviceVID GetDeviceVID() const;
 };
 
 
@@ -69,12 +92,13 @@ private:
 };
 
 
-
-// Implementation of GetDeviceVID function
-int32 UMyLibusbDevice::GetDeviceVID() const {
-    // Your code to get VID from the device
-
-    return this->DeviceId;
+FDeviceVID UMyLibusbDevice::GetDeviceVID() const
+{
+    FString VIDString = TEXT("0x") + FString::Printf(TEXT("%04x"), this->VendorId);
+    FDeviceVID VID;
+    VID.IntVID = this->VendorId;
+    VID.StringVID = VIDString;
+    return VID;
 }
 
 

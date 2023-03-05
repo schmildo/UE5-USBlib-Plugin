@@ -94,6 +94,8 @@ TArray<UMyLibusbDevice*> ULIBUSBwrapper_init::GetDeviceList()
         // Populate device info struct
         UMyLibusbDevice* DeviceInfo = NewObject<UMyLibusbDevice>();
         DeviceInfo->DeviceId = Descriptor.idVendor * 0x10000 + Descriptor.idProduct;
+        DeviceInfo->VendorId = Descriptor.idVendor;
+        DeviceInfo->ProductId = Descriptor.idProduct;
         DeviceInfo->DeviceName = FString::Printf(TEXT("Vendor ID: %04x, Product ID: %04x"), Descriptor.idVendor, Descriptor.idProduct);
 
         // Add device info to list
