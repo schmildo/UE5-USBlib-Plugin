@@ -7,6 +7,22 @@
 #include "M:\UnrealEngineProjects\USB\Plugins\ASchmildosPlugin\ThirdParty\USBLIB\include\libusb.h"
 #include "LIBUSBwrapper_init.generated.h"
 
+
+// Declare the struct to hold device information
+USTRUCT(BlueprintType)
+struct FMyLibusbDevice {
+    GENERATED_BODY()
+
+    UPROPERTY(BlueprintReadOnly)
+    int32 DeviceId;
+
+    UPROPERTY(BlueprintReadOnly)
+    FString DeviceName;
+
+    // Other properties as needed
+};
+
+
 /**
  * 
  */
@@ -16,23 +32,27 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
 	GENERATED_BODY()
 	public:
         ULIBUSBwrapper_init();
-	    //UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init")
+		libusb_context* GetmContext();
+		bool SetmContext(libusb_context* IN_ContextObject);
+
+
+
+
 		bool initialize();
-        UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init") //, meta = (HidePin = "InContext") -- ,meta = (CustomThunk)
-        //static void Exit(UPARAM(ref) ULIBUSBwrapper_init*& IN_Context);
+        UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init")
 			void Exit();
 
-		/*
-		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init") 
-		static void Exit(UPARAM(ref) ULIBUSBwrapper_init*& IN_Context);
-		*/
+
 
 		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|count",meta = (ReturnDisplayName = "NumDevices"))
-		int32 ReallyCountConnectedDevices();
-		//UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|getsetstuff")
-			libusb_context* GetmContext();
-			//UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|getsetstuff")
-			bool SetmContext(libusb_context* IN_ContextObject);
+			int32 ReallyCountConnectedDevices();
+	    /**
+         * Returns a list of connected Libusb devices.
+         * @return A list of FMyLibusbDevice structs representing the connected devices.
+         */
+        UFUNCTION(BlueprintCallable, Category = "MyPlugin|Libusb")
+        static TArray<FMyLibusbDevice> GetDeviceList();
+		
 
 private:
 	libusb_device** m_deviceList;
@@ -41,3 +61,20 @@ private:
 };
 
 
+
+
+
+
+/*
+* USTRUCT(BlueprintType)
+struct FDeviceList
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "LibUSB")
+    TArray<FString> DeviceNames;
+};
+
+UFUNCTION(BlueprintCallable, Category = "LibUSB")
+static FDeviceList GetDeviceList();
+*/
