@@ -2,7 +2,6 @@
 
 #pragma once
 
-//#include "Misc/Variant.h"
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "M:\UnrealEngineProjects\USB\Plugins\ASchmildosPlugin\ThirdParty\USBLIB\include\libusb.h"
@@ -21,6 +20,9 @@
         UPROPERTY(BlueprintReadOnly)
         FString StringVID;
     };
+
+
+
 
 // Declare the class to hold device information
 UCLASS(BlueprintType)
@@ -45,14 +47,14 @@ public:
 
 
 
-    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
-    FDeviceVID GetDeviceVID() const;
+    UFUNCTION(BlueprintPure, Category = "SchmildosPlugin|Libusb")
+        FDeviceVID GetDeviceVID() const;
+    UFUNCTION(BlueprintPure, Category = "SchmildosPlugin|Libusb")
+        FString GetDeviceVID_AsString() const;
+
 };
 
 
-/**
- * 
- */
 UCLASS(Blueprintable, BlueprintType)
 class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
 {
@@ -73,14 +75,7 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
 
 		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|count",meta = (ReturnDisplayName = "NumDevices"))
 			int32 ReallyCountConnectedDevices();
-	    /**
-         * Returns a list of connected Libusb devices.
-         * @return A list of FMyLibusbDevice structs representing the connected devices.
-         */
-    /**
-     * Returns a list of connected Libusb devices.
-     * @return A list of FMyLibusbDevice structs representing the connected devices.
-     */
+
     UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
     static TArray<UMyLibusbDevice*> GetDeviceList();
 		
@@ -101,17 +96,7 @@ FDeviceVID UMyLibusbDevice::GetDeviceVID() const
     return VID;
 }
 
-
-/*
-* USTRUCT(BlueprintType)
-struct FDeviceList
+FString UMyLibusbDevice::GetDeviceVID_AsString() const
 {
-    GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "LibUSB")
-    TArray<FString> DeviceNames;
-};
-
-UFUNCTION(BlueprintCallable, Category = "LibUSB")
-static FDeviceList GetDeviceList();
-*/
+    return TEXT("0x") + FString::Printf(TEXT("%04x"), this->VendorId);
+}
