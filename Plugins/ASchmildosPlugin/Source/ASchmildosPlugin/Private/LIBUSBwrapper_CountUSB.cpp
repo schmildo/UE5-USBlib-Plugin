@@ -5,7 +5,7 @@
 
 int32 ULIBUSBwrapper_CountUSB::SumConnectedDevices(ULIBUSBwrapper_init*& InContext)
 {
-    libusb_context* tmp_context = InContext->m_ContextObject;
+    libusb_context* tmp_context = InContext->GetmContext();
     int32 deviceCount = 0;
 
     // Initialize libusb

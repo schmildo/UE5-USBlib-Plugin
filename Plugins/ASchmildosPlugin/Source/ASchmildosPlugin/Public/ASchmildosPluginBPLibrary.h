@@ -34,18 +34,13 @@ class UASchmildosPluginBPLibrary : public UBlueprintFunctionLibrary
 	public:
 
 
-	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin", meta = (ReturnDisplayName = "Number of USB Devices"))
-		int32 CountConnectedUSBDevices(ULIBUSBwrapper_init*& InContext);
-	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin")
-	//	static bool InitializeLibUsbContext(ULIBUSBwrapper_init*& OutContext);
+
+
+	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin", meta = (ReturnDisplayName = "Context"))
 		static ULIBUSBwrapper_init* InitializeLibUsbContext();
 
-	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin", meta = (ReturnDisplayName = "bContextExited"))
-		static void ExitLibUsbContext(ULIBUSBwrapper_init*& InContext);
 
 
-	//	UFUNCTION(BlueprintCallable, Category = "MyPlugin")
-	//static ULibUsbContext* InitializeLibUsbContext();
 
 	private:
 	

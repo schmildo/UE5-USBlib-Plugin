@@ -18,15 +18,25 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
         ULIBUSBwrapper_init();
 	    //UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init")
 		bool initialize();
-        //UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init")
-        void Exit();
+        UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init") //, meta = (HidePin = "InContext") -- ,meta = (CustomThunk)
+        //static void Exit(UPARAM(ref) ULIBUSBwrapper_init*& IN_Context);
+			void Exit();
 
-		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|count")
-		int32 ReallyCountConnectedDevices(ULIBUSBwrapper_init*& InContext);
+		/*
+		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init") 
+		static void Exit(UPARAM(ref) ULIBUSBwrapper_init*& IN_Context);
+		*/
 
-		libusb_context* m_ContextObject;
+		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|count",meta = (ReturnDisplayName = "NumDevices"))
+		int32 ReallyCountConnectedDevices();
+		//UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|getsetstuff")
+			libusb_context* GetmContext();
+			//UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|getsetstuff")
+			bool SetmContext(libusb_context* IN_ContextObject);
+
 private:
-    
+	libusb_device** m_deviceList;
+	libusb_context* m_ContextObject;
 
 };
 

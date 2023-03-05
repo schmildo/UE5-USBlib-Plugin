@@ -21,30 +21,50 @@ bool ULIBUSBwrapper_init::initialize()
     return true;
 }
 
+
+
+
 void ULIBUSBwrapper_init::Exit()
 {
-    libusb_exit(m_ContextObject);
+    if (m_ContextObject!=nullptr)
+    {
+        libusb_exit(m_ContextObject);
+        m_ContextObject = nullptr;
+    }
 }
 
-int32 ULIBUSBwrapper_init::ReallyCountConnectedDevices(ULIBUSBwrapper_init*& InContext)
+int32 ULIBUSBwrapper_init::ReallyCountConnectedDevices()
 {
     int32 deviceCount = 0;
 
     // Get the number of connected USB devices
-    libusb_device** deviceList;
-    deviceCount = libusb_get_device_list( m_ContextObject, &deviceList); //crashed here - must be the context
+    m_deviceList = nullptr;
+    deviceCount = libusb_get_device_list(m_ContextObject, &m_deviceList);
+    //deviceCount = 42;
     if (deviceCount < 0) {
         // handle error
     }
 
     for (int i = 0; i < deviceCount; i++) {
-        libusb_device* device = deviceList[i];
+        libusb_device* device = m_deviceList[i];
         // do something with the device
     }
 
-    libusb_free_device_list(deviceList, 1);
+    libusb_free_device_list(m_deviceList, 1);
     //libusb_exit( InContext->m_ContextObject);
 
     return deviceCount;
+}
+
+libusb_context* ULIBUSBwrapper_init::GetmContext()
+{
+    return m_ContextObject;
+}
+
+
+bool ULIBUSBwrapper_init::SetmContext(libusb_context* IN_ContextObject)
+{
+    m_ContextObject = IN_ContextObject;
+    return true;
 }
 
