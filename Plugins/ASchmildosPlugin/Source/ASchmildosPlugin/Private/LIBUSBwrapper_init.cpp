@@ -93,6 +93,7 @@ TArray<UMyLibusbDevice*> ULIBUSBwrapper_init::GetDeviceList()
 
         // Populate device info struct
         UMyLibusbDevice* DeviceInfo = NewObject<UMyLibusbDevice>();
+        DeviceInfo->m_ThisDevice = Device;
         DeviceInfo->DeviceId = Descriptor.idVendor * 0x10000 + Descriptor.idProduct;
         DeviceInfo->VendorId = Descriptor.idVendor;
         DeviceInfo->ProductId = Descriptor.idProduct;
@@ -123,3 +124,49 @@ bool ULIBUSBwrapper_init::SetmContext(libusb_context* IN_ContextObject)
     return true;
 }
 
+/*
+* OMG rewrite thsi. so bad. Using unreliable memory and stuff. god.
+*/
+FMylibusb_device_descriptor UMyLibusbDevice::GetDeviceDescriptor() const
+{
+    FMylibusb_device_descriptor MyDD;
+    libusb_device_descriptor* tmp_DD = new libusb_device_descriptor;
+
+    libusb_get_device_descriptor(this->GetActualD(), tmp_DD);
+    MyDD.bcdDevice = tmp_DD->bcdDevice;
+    MyDD.bcdUSB = tmp_DD->bcdUSB;
+    MyDD.bDescriptorType = tmp_DD->bDescriptorType;
+    MyDD.bDeviceClass = tmp_DD->bDeviceClass;
+    MyDD.bDeviceProtocol = tmp_DD->bDeviceProtocol;
+    MyDD.bDeviceSubClass = tmp_DD->bDeviceSubClass;
+    MyDD.bLength = tmp_DD->bLength;
+    MyDD.bMaxPacketSize0 = tmp_DD->bMaxPacketSize0;
+    MyDD.bNumConfigurations = tmp_DD->bNumConfigurations;
+    MyDD.idProduct = tmp_DD->idProduct;
+    MyDD.idVendor = tmp_DD->idVendor;
+    MyDD.iManufacturer = tmp_DD->iManufacturer;
+    MyDD.iProduct = tmp_DD->iProduct;
+    MyDD.iSerialNumber = tmp_DD->iSerialNumber;
+    delete tmp_DD;  
+    return MyDD;
+}
+
+
+libusb_device* UMyLibusbDevice::GetActualD() const
+{
+    return m_ThisDevice;
+}
+
+FDeviceVID UMyLibusbDevice::GetDeviceVID() const
+{
+    FString VIDString = TEXT("0x") + FString::Printf(TEXT("%04x"), this->VendorId);
+    FDeviceVID VID;
+    VID.IntVID = this->VendorId;
+    VID.StringVID = VIDString;
+    return VID;
+}
+
+FString UMyLibusbDevice::GetDeviceVID_AsString() const
+{
+    return TEXT("0x") + FString::Printf(TEXT("%04x"), this->VendorId);
+}
