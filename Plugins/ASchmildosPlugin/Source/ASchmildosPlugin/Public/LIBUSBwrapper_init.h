@@ -9,6 +9,71 @@
 
 
 
+    //Deviceand /or Interface Class codes * /
+    UENUM(BlueprintType)
+        enum class UMylibusb_class_code :uint8
+    {
+        /** In the context of a \ref libusb_device_descriptor "device descriptor",
+         * this bDeviceClass value indicates that each interface specifies its
+         * own class information and all interfaces operate independently.
+         */
+        LIBUSB_CLASS_PER_INTERFACE = 0x00,
+
+        /** Audio class */
+        LIBUSB_CLASS_AUDIO = 0x01,
+
+        /** Communications class */
+        LIBUSB_CLASS_COMM = 0x02,
+
+        /** Human Interface Device class */
+        LIBUSB_CLASS_HID = 0x03,
+
+        /** Physical */
+        LIBUSB_CLASS_PHYSICAL = 0x05,
+
+        /** Image class */
+        LIBUSB_CLASS_IMAGE = 0x06,
+        LIBUSB_CLASS_PTP = 0x06, /* legacy name from libusb-0.1 usb.h */
+
+        /** Printer class */
+        LIBUSB_CLASS_PRINTER = 0x07,
+
+        /** Mass storage class */
+        LIBUSB_CLASS_MASS_STORAGE = 0x08,
+
+        /** Hub class */
+        LIBUSB_CLASS_HUB = 0x09,
+
+        /** Data class */
+        LIBUSB_CLASS_DATA = 0x0a,
+
+        /** Smart Card */
+        LIBUSB_CLASS_SMART_CARD = 0x0b,
+
+        /** Content Security */
+        LIBUSB_CLASS_CONTENT_SECURITY = 0x0d,
+
+        /** Video */
+        LIBUSB_CLASS_VIDEO = 0x0e,
+
+        /** Personal Healthcare */
+        LIBUSB_CLASS_PERSONAL_HEALTHCARE = 0x0f,
+
+        /** Diagnostic Device */
+        LIBUSB_CLASS_DIAGNOSTIC_DEVICE = 0xdc,
+
+        /** Wireless class */
+        LIBUSB_CLASS_WIRELESS = 0xe0,
+
+        /** Miscellaneous class */
+        LIBUSB_CLASS_MISCELLANEOUS = 0xef,
+
+        /** Application class */
+        LIBUSB_CLASS_APPLICATION = 0xfe,
+
+        /** Class is vendor-specific */
+        LIBUSB_CLASS_VENDOR_SPEC = 0xff
+    };
     USTRUCT(BlueprintType)
     struct FDeviceVID
     {
@@ -43,7 +108,9 @@
 
         /** USB-IF class code for the device. See \ref libusb_class_code. */
         UPROPERTY(BlueprintReadOnly)
-        uint8  bDeviceClass;
+            UMylibusb_class_code bDeviceClass;
+            //uint8  bDeviceClass;
+
 
         /** USB-IF subclass code for the device, qualified by the bDeviceClass
          * value */
@@ -87,6 +154,26 @@
         UPROPERTY(BlueprintReadOnly)
         uint8  bNumConfigurations;
     };
+
+/*
+UENUM(BlueprintType)
+enum class UMetaExample : uint8
+{
+  Cat UMETA(DisplayName="Kitty"),
+  Dog,
+  Rooster,
+};
+*/
+    /*
+    *
+ UENUM()
+enum Status
+{
+  Stopped     UMETA(DisplayName = "Stopped"),
+  Moving      UMETA(DisplayName = "Moving"),
+  Attacking   UMETA(DisplayName = "Attacking"),
+};
+    */
 
 
     /*
@@ -159,7 +246,7 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
 		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|count",meta = (ReturnDisplayName = "NumDevices"))
 			int32 ReallyCountConnectedDevices();
 
-    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb", meta = (ReturnDisplayName = "Devices"))
     static TArray<UMyLibusbDevice*> GetDeviceList();
 		
 

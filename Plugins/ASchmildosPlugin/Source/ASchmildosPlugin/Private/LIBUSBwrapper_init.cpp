@@ -136,7 +136,7 @@ FMylibusb_device_descriptor UMyLibusbDevice::GetDeviceDescriptor() const
     MyDD.bcdDevice = tmp_DD->bcdDevice;
     MyDD.bcdUSB = tmp_DD->bcdUSB;
     MyDD.bDescriptorType = tmp_DD->bDescriptorType;
-    MyDD.bDeviceClass = tmp_DD->bDeviceClass;
+    MyDD.bDeviceClass = static_cast<UMylibusb_class_code>(tmp_DD->bDeviceClass);
     MyDD.bDeviceProtocol = tmp_DD->bDeviceProtocol;
     MyDD.bDeviceSubClass = tmp_DD->bDeviceSubClass;
     MyDD.bLength = tmp_DD->bLength;
