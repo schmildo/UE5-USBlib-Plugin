@@ -199,9 +199,26 @@ public:
 
     libusb_device* GetActualD()const;
     libusb_device* m_ThisDevice;
-  libusb_device_descriptor* m_ThisDeviceDescriptor;
+    libusb_context* m_ContextObject;
+    libusb_device_descriptor* m_ThisDeviceDescriptor;
+    ULIBUSBwrapper_init* m_Wrapper;
 };
 
+
+// Declare the class to hold devicehandle information
+UCLASS(BlueprintType)
+class ASCHMILDOSPLUGIN_API UMyLibusbDeviceHandle : public UMyLibusbDevice
+{
+    GENERATED_BODY()
+
+public:
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb",meta = (ReturnDisplayName = "DeviceHandle"))
+        void OpenThisDevice();
+
+
+private:
+    libusb_device_handle* m_DeviceHandle;
+};
 
 UCLASS(Blueprintable, BlueprintType)
 class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
@@ -216,15 +233,15 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
 			void Exit();
 		UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb",meta = (ReturnDisplayName = "NumDevices"))
 			int32 CountDevices();
-        UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb", meta = (ReturnDisplayName = "Devices"))
+        UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb", meta = (ReturnDisplayName = "OUT_DeviceList"))
             TArray<UMyLibusbDevice*> GetDeviceList();
         UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
             static void PrintDeviceList(TArray<UMyLibusbDevice*> IN_DeviceList);
-
+        libusb_context* m_ContextObject;
     private:
 	    //libusb_device** m_deviceList;
         TArray<UMyLibusbDevice*> m_DeviceList;
-	    libusb_context* m_ContextObject;
+	    
         libusb_device** m_Devices;
 
 };

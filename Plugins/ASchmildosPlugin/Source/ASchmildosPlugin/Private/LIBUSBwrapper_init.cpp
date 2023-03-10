@@ -99,6 +99,8 @@ TArray<UMyLibusbDevice*> ULIBUSBwrapper_init::GetDeviceList()
         DeviceInfo->VendorId = Descriptor.idVendor;
         DeviceInfo->ProductId = Descriptor.idProduct;
         DeviceInfo->DeviceName = FString::Printf(TEXT("Vendor ID: %04x, Product ID: %04x"), Descriptor.idVendor, Descriptor.idProduct);
+        DeviceInfo->m_ContextObject = this->m_ContextObject;
+        DeviceInfo->m_Wrapper = this;
 
         // Add device info to list
         m_DeviceList.Add(DeviceInfo);
@@ -115,7 +117,20 @@ TArray<UMyLibusbDevice*> ULIBUSBwrapper_init::GetDeviceList()
 
 void ULIBUSBwrapper_init::PrintDeviceList(TArray<UMyLibusbDevice*> IN_DeviceList)
 {
+    
+    int Count = IN_DeviceList.Num();
     UE_LOG(LogTemp, Warning, TEXT("SHIT BEIGN PRINTED"));
+    if (Count < 0)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get list of Libusb devices"));
+        //  libusb_exit(m_ContextObject);
+        //return IN_DeviceList;
+    }
+
+    for (int32 i = 0; i < Count; ++i)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("abc"));
+    }
 }
 
 libusb_context* ULIBUSBwrapper_init::GetmContext()
@@ -185,3 +200,33 @@ FString UMylibusb_device_descriptor::getCode()
     return StaticEnum<UMylibusb_class_code>()->GetValueAsString(this->bDeviceClass);
 }
 */
+
+
+/*
+libusb_device_handle *TIM_GetDeviceHandlePointer(libusb_context* USB_Context, uint16_t IDVendor = 0x0802, uint16_t IDProduct = 0x0005)
+{
+    libusb_device_handle *returnValue;
+    returnValue = libusb_open_device_with_vid_pid(USB_Context, IDVendor, 0x0005);
+    if (returnValue != nullptr)
+    {
+        std::cout << "Found handle.." << std::endl;
+    }
+    else
+    {
+        std::cout << "Did not find handle.. device probably not plugged in. Exiting safely." << std::endl;
+        exit(0);
+    }
+    return returnValue;
+}
+*/
+
+
+
+
+
+void UMyLibusbDeviceHandle::OpenThisDevice()
+{
+    UE_LOG(LogTemp, Warning, TEXT("im inside um... TIM_open_device_with_vid_pid"));
+    this->m_DeviceHandle = nullptr;
+    this->m_DeviceHandle = libusb_open_device_with_vid_pid(m_Wrapper->m_ContextObject, this->VendorId, this->ProductId);
+}
