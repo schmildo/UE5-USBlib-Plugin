@@ -36,7 +36,7 @@ class UASchmildosPluginBPLibrary : public UBlueprintFunctionLibrary
 
 
 
-	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin", meta = (ReturnDisplayName = "Context"))
+	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init", meta = (ReturnDisplayName = "Context"))
 		static ULIBUSBwrapper_init* InitializeLibUsbContext();
 
 

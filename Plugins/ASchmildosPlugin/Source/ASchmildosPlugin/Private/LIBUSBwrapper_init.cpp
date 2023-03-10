@@ -33,24 +33,25 @@ void ULIBUSBwrapper_init::Exit()
     }
 }
 
-int32 ULIBUSBwrapper_init::ReallyCountConnectedDevices()
+int32 ULIBUSBwrapper_init::CountDevices()
 {
     int32 deviceCount = 0;
 
     // Get the number of connected USB devices
-    m_deviceList = nullptr;
-    deviceCount = libusb_get_device_list(m_ContextObject, &m_deviceList);
+    //m_deviceList = nullptr;
+    
+    deviceCount = libusb_get_device_list(m_ContextObject, &m_Devices);
     //deviceCount = 42;
     if (deviceCount < 0) {
         // handle error
     }
 
     for (int i = 0; i < deviceCount; i++) {
-        libusb_device* device = m_deviceList[i];
+        libusb_device* device = m_Devices[i];
         // do something with the device
     }
 
-    libusb_free_device_list(m_deviceList, 1);
+    //libusb_free_device_list(m_Devices, 1);
     //libusb_exit( InContext->m_ContextObject);
 
     return deviceCount;
@@ -58,30 +59,30 @@ int32 ULIBUSBwrapper_init::ReallyCountConnectedDevices()
 
 TArray<UMyLibusbDevice*> ULIBUSBwrapper_init::GetDeviceList()
 {
-    TArray<UMyLibusbDevice*> DeviceList;
+    //TArray<UMyLibusbDevice*> DeviceList;
 
     // Initialize Libusb context
-    libusb_context* Context;
-    if (libusb_init(&Context) != 0)
+    //libusb_context* Context;
+    if (libusb_init(&m_ContextObject) != 0)
     {
         UE_LOG(LogTemp, Error, TEXT("Failed to initialize Libusb context"));
-        return DeviceList;
+        return m_DeviceList;
     }
 
     // Get list of devices
-    libusb_device** Devices;
-    ssize_t Count = libusb_get_device_list(Context, &Devices);
+    //libusb_device** Devices;
+    ssize_t Count = libusb_get_device_list(m_ContextObject, &m_Devices);
     if (Count < 0)
     {
         UE_LOG(LogTemp, Error, TEXT("Failed to get list of Libusb devices"));
-        libusb_exit(Context);
-        return DeviceList;
+      //  libusb_exit(m_ContextObject);
+        return m_DeviceList;
     }
 
     // Iterate over devices and populate device list
     for (int32 i = 0; i < Count; ++i)
     {
-        libusb_device* Device = Devices[i];
+        libusb_device* Device = m_Devices[i];
 
         // Get device descriptor
         libusb_device_descriptor Descriptor;
@@ -100,16 +101,21 @@ TArray<UMyLibusbDevice*> ULIBUSBwrapper_init::GetDeviceList()
         DeviceInfo->DeviceName = FString::Printf(TEXT("Vendor ID: %04x, Product ID: %04x"), Descriptor.idVendor, Descriptor.idProduct);
 
         // Add device info to list
-        DeviceList.Add(DeviceInfo);
+        m_DeviceList.Add(DeviceInfo);
     }
 
     // Free list of devices
-    libusb_free_device_list(Devices, 1);
+   // libusb_free_device_list(Devices, 1);
 
     // Exit Libusb context
-    libusb_exit(Context);
+  //  libusb_exit(m_ContextObject);
 
-    return DeviceList;
+    return m_DeviceList;
+}
+
+void ULIBUSBwrapper_init::PrintDeviceList(TArray<UMyLibusbDevice*> IN_DeviceList)
+{
+    UE_LOG(LogTemp, Warning, TEXT("SHIT BEIGN PRINTED"));
 }
 
 libusb_context* ULIBUSBwrapper_init::GetmContext()
@@ -126,31 +132,32 @@ bool ULIBUSBwrapper_init::SetmContext(libusb_context* IN_ContextObject)
 
 /*
 * OMG rewrite thsi. so bad. Using unreliable memory and stuff. god.
-*/
-FMylibusb_device_descriptor UMyLibusbDevice::GetDeviceDescriptor() const
+
+UMylibusb_device_descriptor* UMyLibusbDevice::GetDeviceDescriptor() const
 {
-    FMylibusb_device_descriptor MyDD;
+    UMylibusb_device_descriptor* MyDD = new UMylibusb_device_descriptor;
     libusb_device_descriptor* tmp_DD = new libusb_device_descriptor;
 
     libusb_get_device_descriptor(this->GetActualD(), tmp_DD);
-    MyDD.bcdDevice = tmp_DD->bcdDevice;
-    MyDD.bcdUSB = tmp_DD->bcdUSB;
-    MyDD.bDescriptorType = tmp_DD->bDescriptorType;
-    MyDD.bDeviceClass = static_cast<UMylibusb_class_code>(tmp_DD->bDeviceClass);
-    MyDD.bDeviceProtocol = tmp_DD->bDeviceProtocol;
-    MyDD.bDeviceSubClass = tmp_DD->bDeviceSubClass;
-    MyDD.bLength = tmp_DD->bLength;
-    MyDD.bMaxPacketSize0 = tmp_DD->bMaxPacketSize0;
-    MyDD.bNumConfigurations = tmp_DD->bNumConfigurations;
-    MyDD.idProduct = tmp_DD->idProduct;
-    MyDD.idVendor = tmp_DD->idVendor;
-    MyDD.iManufacturer = tmp_DD->iManufacturer;
-    MyDD.iProduct = tmp_DD->iProduct;
-    MyDD.iSerialNumber = tmp_DD->iSerialNumber;
+    MyDD->bcdDevice = tmp_DD->bcdDevice;
+    MyDD->bcdUSB = tmp_DD->bcdUSB;
+    MyDD->bDescriptorType = tmp_DD->bDescriptorType;
+    MyDD->bDeviceClass = static_cast<UMylibusb_class_code>(tmp_DD->bDeviceClass);
+    MyDD->bDeviceProtocol = tmp_DD->bDeviceProtocol;
+    MyDD->bDeviceSubClass = tmp_DD->bDeviceSubClass;
+    MyDD->bLength = tmp_DD->bLength;
+    MyDD->bMaxPacketSize0 = tmp_DD->bMaxPacketSize0;
+    MyDD->bNumConfigurations = tmp_DD->bNumConfigurations;
+    MyDD->idProduct = tmp_DD->idProduct;
+    MyDD->idVendor = tmp_DD->idVendor;
+    MyDD->iManufacturer = tmp_DD->iManufacturer;
+    MyDD->iProduct = tmp_DD->iProduct;
+    MyDD->iSerialNumber = tmp_DD->iSerialNumber;
     delete tmp_DD;  
     return MyDD;
 }
 
+*/
 
 libusb_device* UMyLibusbDevice::GetActualD() const
 {
@@ -170,3 +177,11 @@ FString UMyLibusbDevice::GetDeviceVID_AsString() const
 {
     return TEXT("0x") + FString::Printf(TEXT("%04x"), this->VendorId);
 }
+
+/*
+FString UMylibusb_device_descriptor::getCode()
+{
+    //this->bDeviceClass
+    return StaticEnum<UMylibusb_class_code>()->GetValueAsString(this->bDeviceClass);
+}
+*/
