@@ -13,6 +13,8 @@
 UENUM(BlueprintType)
     enum class UMylibusb_class_code :uint8
 {
+
+
     /** In the context of a \ref libusb_device_descriptor "device descriptor",
         * this bDeviceClass value indicates that each interface specifies its
         * own class information and all interfaces operate independently.
@@ -86,14 +88,56 @@ USTRUCT(BlueprintType)
     FString StringVID;
 };
 
-/*
-UCLASS(BlueprintType)
-    class ASCHMILDOSPLUGIN_API UMylibusb_device_descriptor
-{
 
-        GENERATED_BODY()
+
+
+// Declare the class to hold device information
+UCLASS(BlueprintType)
+class ASCHMILDOSPLUGIN_API UMyLibusbDevice : public UObject
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(BlueprintReadOnly)
+        int32 DeviceId;
+
+    UPROPERTY(BlueprintReadOnly)
+        int32 VendorId;
+
+    UPROPERTY(BlueprintReadOnly)
+        int32 ProductId;
+
+    UPROPERTY(BlueprintReadOnly)
+        FString DeviceName;
+
+    // Other properties as needed
+
+    UFUNCTION(BlueprintPure, Category = "SchmildosPlugin|Libusb")
+        FDeviceVID GetDeviceVID() const;
+
+    UFUNCTION(BlueprintPure, Category = "SchmildosPlugin|Libusb")
+        FString GetDeviceVID_AsString() const;
+
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
+        static UMylibusb_device_descriptor* GetDeviceDescriptor(UMyLibusbDevice* IN_Device);
+
+    libusb_device* GetActualD()const;
+    libusb_device* m_ThisDevice;
+    libusb_context* m_ContextObject;
+    libusb_device_descriptor* m_ThisDeviceDescriptor;
+    ULIBUSBwrapper_init* m_Wrapper;
+};
+
+
+
+UCLASS(Blueprintable, BlueprintType)
+    class ASCHMILDOSPLUGIN_API UMylibusb_device_descriptor : public UObject
+{
+    GENERATED_BODY()
 
     public:
+        UMylibusb_device_descriptor();
+
         // Size of this descriptor (in bytes)
         UPROPERTY(BlueprintReadOnly)
             uint8  bLength;
@@ -164,45 +208,6 @@ UCLASS(BlueprintType)
 
     private:
     };
-
-    */
-
-// Declare the class to hold device information
-UCLASS(BlueprintType)
-class ASCHMILDOSPLUGIN_API UMyLibusbDevice : public UObject
-{
-    GENERATED_BODY()
-
-public:
-    UPROPERTY(BlueprintReadOnly)
-        int32 DeviceId;
-
-    UPROPERTY(BlueprintReadOnly)
-        int32 VendorId;
-
-    UPROPERTY(BlueprintReadOnly)
-        int32 ProductId;
-
-    UPROPERTY(BlueprintReadOnly)
-        FString DeviceName;
-
-    // Other properties as needed
-
-    UFUNCTION(BlueprintPure, Category = "SchmildosPlugin|Libusb")
-        FDeviceVID GetDeviceVID() const;
-
-    UFUNCTION(BlueprintPure, Category = "SchmildosPlugin|Libusb")
-        FString GetDeviceVID_AsString() const;
-
-   // UFUNCTION(BlueprintPure, Category = "SchmildosPlugin|Libusb")
-     //   UMylibusb_device_descriptor* GetDeviceDescriptor() const;
-
-    libusb_device* GetActualD()const;
-    libusb_device* m_ThisDevice;
-    libusb_context* m_ContextObject;
-    libusb_device_descriptor* m_ThisDeviceDescriptor;
-    ULIBUSBwrapper_init* m_Wrapper;
-};
 
 
 // Declare the class to hold devicehandle information

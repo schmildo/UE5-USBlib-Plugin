@@ -145,34 +145,7 @@ bool ULIBUSBwrapper_init::SetmContext(libusb_context* IN_ContextObject)
     return true;
 }
 
-/*
-* OMG rewrite thsi. so bad. Using unreliable memory and stuff. god.
 
-UMylibusb_device_descriptor* UMyLibusbDevice::GetDeviceDescriptor() const
-{
-    UMylibusb_device_descriptor* MyDD = new UMylibusb_device_descriptor;
-    libusb_device_descriptor* tmp_DD = new libusb_device_descriptor;
-
-    libusb_get_device_descriptor(this->GetActualD(), tmp_DD);
-    MyDD->bcdDevice = tmp_DD->bcdDevice;
-    MyDD->bcdUSB = tmp_DD->bcdUSB;
-    MyDD->bDescriptorType = tmp_DD->bDescriptorType;
-    MyDD->bDeviceClass = static_cast<UMylibusb_class_code>(tmp_DD->bDeviceClass);
-    MyDD->bDeviceProtocol = tmp_DD->bDeviceProtocol;
-    MyDD->bDeviceSubClass = tmp_DD->bDeviceSubClass;
-    MyDD->bLength = tmp_DD->bLength;
-    MyDD->bMaxPacketSize0 = tmp_DD->bMaxPacketSize0;
-    MyDD->bNumConfigurations = tmp_DD->bNumConfigurations;
-    MyDD->idProduct = tmp_DD->idProduct;
-    MyDD->idVendor = tmp_DD->idVendor;
-    MyDD->iManufacturer = tmp_DD->iManufacturer;
-    MyDD->iProduct = tmp_DD->iProduct;
-    MyDD->iSerialNumber = tmp_DD->iSerialNumber;
-    delete tmp_DD;  
-    return MyDD;
-}
-
-*/
 
 libusb_device* UMyLibusbDevice::GetActualD() const
 {
@@ -193,13 +166,17 @@ FString UMyLibusbDevice::GetDeviceVID_AsString() const
     return TEXT("0x") + FString::Printf(TEXT("%04x"), this->VendorId);
 }
 
-/*
+UMylibusb_device_descriptor::UMylibusb_device_descriptor()
+{
+
+}
+
 FString UMylibusb_device_descriptor::getCode()
 {
     //this->bDeviceClass
     return StaticEnum<UMylibusb_class_code>()->GetValueAsString(this->bDeviceClass);
 }
-*/
+
 
 
 /*
@@ -230,4 +207,33 @@ UMyLibusbDeviceHandle* UMyLibusbDeviceHandle::OpenThisDevice(UMyLibusbDevice* IN
     UMyLibusbDeviceHandle* Handle = NewObject<UMyLibusbDeviceHandle>();
     Handle->m_DeviceHandle = libusb_open_device_with_vid_pid(IN_Device->m_ContextObject, IN_Device->VendorId, IN_Device->ProductId);
     return Handle;
+}
+
+
+
+// OMG rewrite thsi. so bad. Using unreliable memory and stuff. god.
+
+UMylibusb_device_descriptor* UMyLibusbDevice::GetDeviceDescriptor(UMyLibusbDevice* IN_Device)
+{
+    //ULIBUSBwrapper_init* Context = NewObject<ULIBUSBwrapper_init>();
+    UMylibusb_device_descriptor* MyDD = NewObject<UMylibusb_device_descriptor>();
+    libusb_device_descriptor* tmp_DD = new libusb_device_descriptor;
+
+    libusb_get_device_descriptor(IN_Device->GetActualD(), tmp_DD);
+    MyDD->bcdDevice = tmp_DD->bcdDevice;
+    MyDD->bcdUSB = tmp_DD->bcdUSB;
+    MyDD->bDescriptorType = tmp_DD->bDescriptorType;
+    MyDD->bDeviceClass = static_cast<UMylibusb_class_code>(tmp_DD->bDeviceClass);
+    MyDD->bDeviceProtocol = tmp_DD->bDeviceProtocol;
+    MyDD->bDeviceSubClass = tmp_DD->bDeviceSubClass;
+    MyDD->bLength = tmp_DD->bLength;
+    MyDD->bMaxPacketSize0 = tmp_DD->bMaxPacketSize0;
+    MyDD->bNumConfigurations = tmp_DD->bNumConfigurations;
+    MyDD->idProduct = tmp_DD->idProduct;
+    MyDD->idVendor = tmp_DD->idVendor;
+    MyDD->iManufacturer = tmp_DD->iManufacturer;
+    MyDD->iProduct = tmp_DD->iProduct;
+    MyDD->iSerialNumber = tmp_DD->iSerialNumber;
+    delete tmp_DD;
+    return MyDD;
 }
