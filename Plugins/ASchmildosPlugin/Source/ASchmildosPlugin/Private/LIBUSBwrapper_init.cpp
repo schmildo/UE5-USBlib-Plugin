@@ -224,9 +224,10 @@ libusb_device_handle *TIM_GetDeviceHandlePointer(libusb_context* USB_Context, ui
 
 
 
-void UMyLibusbDeviceHandle::OpenThisDevice()
+UMyLibusbDeviceHandle* UMyLibusbDeviceHandle::OpenThisDevice(UMyLibusbDevice* IN_Device)
 {
     UE_LOG(LogTemp, Warning, TEXT("im inside um... TIM_open_device_with_vid_pid"));
-    this->m_DeviceHandle = nullptr;
-    this->m_DeviceHandle = libusb_open_device_with_vid_pid(m_Wrapper->m_ContextObject, this->VendorId, this->ProductId);
+    UMyLibusbDeviceHandle* Handle = NewObject<UMyLibusbDeviceHandle>();
+    Handle->m_DeviceHandle = libusb_open_device_with_vid_pid(IN_Device->m_ContextObject, IN_Device->VendorId, IN_Device->ProductId);
+    return Handle;
 }

@@ -213,7 +213,7 @@ class ASCHMILDOSPLUGIN_API UMyLibusbDeviceHandle : public UMyLibusbDevice
 
 public:
     UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb",meta = (ReturnDisplayName = "DeviceHandle"))
-        void OpenThisDevice();
+        static UMyLibusbDeviceHandle* OpenThisDevice(UMyLibusbDevice* IN_Device);
 
 
 private:
