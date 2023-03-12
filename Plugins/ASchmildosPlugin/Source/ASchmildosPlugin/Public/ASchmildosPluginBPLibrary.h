@@ -40,8 +40,11 @@ class UASchmildosPluginBPLibrary : public UBlueprintFunctionLibrary
 		static ULIBUSBwrapper_init* InitializeLibUsbContext();
 
 
-
-
-	private:
+	//FIX THIS get version- not working maybe?
+	UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init")
+	FString LibUSB_GetVersion();
+	//UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Init")
+	static FString Convert_uint16_to_String(uint16_t input);
+private:
 	
 };

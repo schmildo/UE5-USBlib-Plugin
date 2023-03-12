@@ -4,7 +4,7 @@
 
 UASchmildosPluginBPLibrary::UASchmildosPluginBPLibrary(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
-
+	
 }
 
 
@@ -31,7 +31,7 @@ ULIBUSBwrapper_init* UASchmildosPluginBPLibrary::InitializeLibUsbContext()
 
 
 
-/*
+
 
 FString UASchmildosPluginBPLibrary::LibUSB_GetVersion()
 {
@@ -44,12 +44,11 @@ FString UASchmildosPluginBPLibrary::LibUSB_GetVersion()
 		str_ReturnValue = Major+"."+Minor+"."+Micro;
 	return str_ReturnValue;
 }
-*/
 
-/*
+
+
 FString UASchmildosPluginBPLibrary::Convert_uint16_to_String(uint16_t input)
 {
 	return FString::FromInt(int(input));
 }
 
-*/

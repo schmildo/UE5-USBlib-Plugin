@@ -133,6 +133,13 @@ void ULIBUSBwrapper_init::PrintDeviceList(TArray<UMyLibusbDevice*> IN_DeviceList
     }
 }
 
+//this is bullshit, just tryhing to get the function definitions right.
+UMyLibusbDeviceHandle* ULIBUSBwrapper_init::TIM_GetCardDeviceHandle(ULIBUSBwrapper_init* IN_Context)
+{
+    UMyLibusbDeviceHandle* Handle = NewObject<UMyLibusbDeviceHandle>();
+    return Handle;
+}
+
 libusb_context* ULIBUSBwrapper_init::GetmContext()
 {
     return m_ContextObject;
@@ -214,6 +221,14 @@ UMyLibusbDeviceHandle* UMyLibusbDeviceHandle::OpenThisDevice(UMyLibusbDevice* IN
 void UMyLibusbDeviceHandle::CloseThisDeviceHandle(UMyLibusbDeviceHandle* IN_DeviceHandle)
 {
     libusb_close(IN_DeviceHandle->m_DeviceHandle);
+}
+
+void UMyLibusbDeviceHandle::Sendstuff(UMyLibusbDeviceHandle* IN_DeviceHandle)
+{
+
+    std::array<uint8_t, 8> MakeItGreen = { 0x1b, 0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; //goes green
+    std::array<uint8_t, 8> MakeItBlue = { 0x1b, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; //goes blue
+   this->TIM_Current(MakeItBlue, IN_DeviceHandle->m_DeviceHandle, 0x01);
 }
 
 void UMyLibusbDeviceHandle::TIM_Current(std::array<uint8_t, 8> Data, libusb_device_handle* DeviceHandle, uint8_t Endpoint)

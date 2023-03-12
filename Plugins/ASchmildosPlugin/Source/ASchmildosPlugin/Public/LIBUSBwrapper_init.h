@@ -217,7 +217,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
         static void CloseThisDeviceHandle(UMyLibusbDeviceHandle* IN_DeviceHandle);
 
-    
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
+        void Sendstuff(UMyLibusbDeviceHandle* IN_DeviceHandle);
 
 private:
     libusb_device_handle* m_DeviceHandle;
@@ -241,12 +242,12 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_init : public UObject
             TArray<UMyLibusbDevice*> GetDeviceList();
         UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
             static void PrintDeviceList(TArray<UMyLibusbDevice*> IN_DeviceList);
+        UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb",meta = (ReturnDisplayName = "CardDeviceHandle"))
+            UMyLibusbDeviceHandle* TIM_GetCardDeviceHandle(ULIBUSBwrapper_init* IN_Context);
+
         libusb_context* m_ContextObject;
     private:
-	    //libusb_device** m_deviceList;
         TArray<UMyLibusbDevice*> m_DeviceList;
-	    
         libusb_device** m_Devices;
-
 };
 

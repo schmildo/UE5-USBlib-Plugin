@@ -15,8 +15,7 @@ class ASCHMILDOSPLUGIN_API ULIBUSBwrapper_CountUSB : public UObject
 {
 	GENERATED_BODY()
 public:
-	   // UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|count")
-		//static int32 SumConnectedDevices(ULIBUSBwrapper_init*& InContext);
+
 private:
 
 };
