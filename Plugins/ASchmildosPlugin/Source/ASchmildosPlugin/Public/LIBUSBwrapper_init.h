@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "M:\UnrealEngineProjects\USB\Plugins\ASchmildosPlugin\ThirdParty\USBLIB\include\libusb.h"
+#include <array>
 #include "LIBUSBwrapper_init.generated.h"
 
 
@@ -143,8 +144,7 @@ UCLASS(Blueprintable, BlueprintType)
             uint8  bLength;
 
         // Descriptor type. Will have value
-         // \ref libusb_descriptor_type::LIBUSB_DT_DEVICE LIBUSB_DT_DEVICE in this
-         // context.
+         // \ref libusb_descriptor_type::LIBUSB_DT_DEVICE LIBUSB_DT_DEVICE in this context.
         UPROPERTY(BlueprintReadOnly)
             uint8  bDescriptorType;
 
@@ -156,18 +156,12 @@ UCLASS(Blueprintable, BlueprintType)
         // USB-IF class code for the device. See \ref libusb_class_code. 
         UPROPERTY(BlueprintReadOnly)
             UMylibusb_class_code bDeviceClass;
-            //UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
-            //TEnumAsByte<UMylibusb_class_code> bDeviceClass;
-            //uint8  bDeviceClass;
 
-
-        //USB-IF subclass code for the device, qualified by the bDeviceClass
-         // value 
+        //USB-IF subclass code for the device, qualified by the bDeviceClass value 
         UPROPERTY(BlueprintReadOnly)
             uint8  bDeviceSubClass;
 
-        // USB-IF protocol code for the device, qualified by the bDeviceClass and
-         // bDeviceSubClass values 
+        // USB-IF protocol code for the device, qualified by the bDeviceClass and bDeviceSubClass values 
         UPROPERTY(BlueprintReadOnly)
             uint8  bDeviceProtocol;
 
@@ -210,7 +204,7 @@ UCLASS(Blueprintable, BlueprintType)
     };
 
 
-// Declare the class to hold devicehandle information
+// Declare the class to hold device handle information
 UCLASS(BlueprintType)
 class ASCHMILDOSPLUGIN_API UMyLibusbDeviceHandle : public UMyLibusbDevice
 {
@@ -220,9 +214,14 @@ public:
     UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb",meta = (ReturnDisplayName = "DeviceHandle"))
         static UMyLibusbDeviceHandle* OpenThisDevice(UMyLibusbDevice* IN_Device);
 
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
+        static void CloseThisDeviceHandle(UMyLibusbDeviceHandle* IN_DeviceHandle);
+
+    
 
 private:
     libusb_device_handle* m_DeviceHandle;
+    void TIM_Current(std::array<uint8_t, 8> Data, libusb_device_handle* DeviceHandle, uint8_t Endpoint);
 };
 
 UCLASS(Blueprintable, BlueprintType)

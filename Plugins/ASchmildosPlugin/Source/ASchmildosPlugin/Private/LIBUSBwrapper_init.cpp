@@ -211,6 +211,28 @@ UMyLibusbDeviceHandle* UMyLibusbDeviceHandle::OpenThisDevice(UMyLibusbDevice* IN
 
 
 
+void UMyLibusbDeviceHandle::CloseThisDeviceHandle(UMyLibusbDeviceHandle* IN_DeviceHandle)
+{
+    libusb_close(IN_DeviceHandle->m_DeviceHandle);
+}
+
+void UMyLibusbDeviceHandle::TIM_Current(std::array<uint8_t, 8> Data, libusb_device_handle* DeviceHandle, uint8_t Endpoint)
+{
+    int bytes_transferred_cnt = 0;
+    int rc = 0;
+
+    rc = libusb_interrupt_transfer(DeviceHandle, Endpoint, Data.data(), Data.size(), &bytes_transferred_cnt, 0);
+
+    if (rc != libusb_error::LIBUSB_SUCCESS)
+    {
+        std::cerr << "ERROR: Couldn't send mag stripe read sequence initiation command, rc=" << rc << std::endl;
+    }
+    else
+    {
+        if (bytes_transferred_cnt != 0)std::cout << "data size:" << Data.size() << " and bytes transferred:" << bytes_transferred_cnt << std::endl;
+    }
+}
+
 // OMG rewrite thsi. so bad. Using unreliable memory and stuff. god.
 
 UMylibusb_device_descriptor* UMyLibusbDevice::GetDeviceDescriptor(UMyLibusbDevice* IN_Device)
