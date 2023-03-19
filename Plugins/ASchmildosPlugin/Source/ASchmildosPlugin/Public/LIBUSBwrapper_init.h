@@ -204,6 +204,8 @@ UCLASS(Blueprintable, BlueprintType)
     };
 
 
+
+
 // Declare the class to hold device handle information
 UCLASS(BlueprintType)
 class ASCHMILDOSPLUGIN_API UMyLibusbDeviceHandle : public UMyLibusbDevice
@@ -211,18 +213,20 @@ class ASCHMILDOSPLUGIN_API UMyLibusbDeviceHandle : public UMyLibusbDevice
     GENERATED_BODY()
 
 public:
-    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb",meta = (ReturnDisplayName = "DeviceHandle"))
-        static UMyLibusbDeviceHandle* OpenThisDevice(UMyLibusbDevice* IN_Device);
+    //meta=(ExpandBoolAsExecs="bFreezing")
+    UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb",meta = (ReturnDisplayName = "DeviceHandle", ExpandBoolAsExecs = "OUT_bOpenSuccess"))
+        static UMyLibusbDeviceHandle* OpenThisDevice(UMyLibusbDevice* IN_Device, bool& OUT_bOpenSuccess);
 
     UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
         static void CloseThisDeviceHandle(UMyLibusbDeviceHandle* IN_DeviceHandle);
 
     UFUNCTION(BlueprintCallable, Category = "SchmildosPlugin|Libusb")
-        void Sendstuff(UMyLibusbDeviceHandle* IN_DeviceHandle);
+        void Sendstuff();
 
 private:
     libusb_device_handle* m_DeviceHandle;
-    void TIM_Current(std::array<uint8_t, 8> Data, libusb_device_handle* DeviceHandle, uint8_t Endpoint);
+    static void TIM_Current(std::array<uint8_t, 8> Data, libusb_device_handle* DeviceHandle, uint8_t Endpoint);
+    bool bOpenSuccess;
 };
 
 UCLASS(Blueprintable, BlueprintType)

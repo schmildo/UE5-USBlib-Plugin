@@ -208,11 +208,14 @@ libusb_device_handle *TIM_GetDeviceHandlePointer(libusb_context* USB_Context, ui
 
 
 
-UMyLibusbDeviceHandle* UMyLibusbDeviceHandle::OpenThisDevice(UMyLibusbDevice* IN_Device)
+UMyLibusbDeviceHandle* UMyLibusbDeviceHandle::OpenThisDevice(UMyLibusbDevice* IN_Device, bool& OUT_bOpenSuccess)
 {
     UE_LOG(LogTemp, Warning, TEXT("im inside um... TIM_open_device_with_vid_pid"));
     UMyLibusbDeviceHandle* Handle = NewObject<UMyLibusbDeviceHandle>();
-    Handle->m_DeviceHandle = libusb_open_device_with_vid_pid(IN_Device->m_ContextObject, IN_Device->VendorId, IN_Device->ProductId);
+    Handle->m_DeviceHandle = nullptr;
+    OUT_bOpenSuccess = false;
+    Handle->m_DeviceHandle = libusb_open_device_with_vid_pid(IN_Device->m_ContextObject, IN_Device->VendorId, IN_Device->ProductId); //this crashes too
+    if (Handle->m_DeviceHandle != nullptr)OUT_bOpenSuccess = true;
     return Handle;
 }
 
@@ -223,12 +226,12 @@ void UMyLibusbDeviceHandle::CloseThisDeviceHandle(UMyLibusbDeviceHandle* IN_Devi
     libusb_close(IN_DeviceHandle->m_DeviceHandle);
 }
 
-void UMyLibusbDeviceHandle::Sendstuff(UMyLibusbDeviceHandle* IN_DeviceHandle)
+void UMyLibusbDeviceHandle::Sendstuff()
 {
 
     std::array<uint8_t, 8> MakeItGreen = { 0x1b, 0x61, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; //goes green
     std::array<uint8_t, 8> MakeItBlue = { 0x1b, 0x72, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }; //goes blue
-   this->TIM_Current(MakeItBlue, IN_DeviceHandle->m_DeviceHandle, 0x01);
+     UMyLibusbDeviceHandle::TIM_Current(MakeItBlue, m_DeviceHandle, 0x01);
 }
 
 void UMyLibusbDeviceHandle::TIM_Current(std::array<uint8_t, 8> Data, libusb_device_handle* DeviceHandle, uint8_t Endpoint)
@@ -236,7 +239,7 @@ void UMyLibusbDeviceHandle::TIM_Current(std::array<uint8_t, 8> Data, libusb_devi
     int bytes_transferred_cnt = 0;
     int rc = 0;
 
-    rc = libusb_interrupt_transfer(DeviceHandle, Endpoint, Data.data(), Data.size(), &bytes_transferred_cnt, 0);
+    rc = libusb_interrupt_transfer(DeviceHandle, Endpoint, Data.data(), Data.size(), &bytes_transferred_cnt, 0); //this is where a crash will occur if you screw up
 
     if (rc != libusb_error::LIBUSB_SUCCESS)
     {
